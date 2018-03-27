@@ -30,7 +30,7 @@ def intention_analysis(message):
     """Determine the intention of the user."""
     print(luis_key)
     try:
-        res = requests.get('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/c200592a-cb41-46de-8008-72f23c577591?subscription-key={}&verbose=true&timezoneOffset=0&q={}'.format(luis_key, message))
+        res = requests.get('https://westcentralus.api.cognitive.microsoft.com/luis/v2.0/apps/c200592a-cb41-46de-8008-72f23c577591?subscription-key={}&verbose=true&timezoneOffset=0&q={}'.format(luis_key, message))
         print(res)
         print(res.json())
         return res.json()
