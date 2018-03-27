@@ -7,26 +7,30 @@ import urllib.parse
 import urllib.error
 import urllib.request
 import json
+import celery
 
 luis_key = os.environ.get('LUIS_KEY')
 text_analytics_key = os.environ.get('TEXT_ANALYTICS_KEY')
 
 
-def create_conversation(message):
-    """."""
-    CreateConversation(fill=message,
-                       members=[{"id": "l0skjasdkfjkjlshdyvoiunbqiewur"}],
-                       topicName='Starting a conversation',
-                       text='Lets have a conversation').send()
+# @celery.task()
+# def create_conversation(message):
+#     """."""
+#     CreateConversation(fill=message,
+#                        members=[{"id": "l0skjasdkfjkjlshdyvoiunbqiewur"}],
+#                        topicName='Starting a conversation',
+#                        text='Lets have a conversation').send()
 
 
-def init_conversation(message):
-    """Begin conversation."""
-    SendToConversation(fill=message,
-                       conversationId='jg3alifjua8sdljn9abiuao4ihbimroivb',
-                       text='Hi! I\'m a chat bot designed to help you find movies. Feel free to search for movies by actor, title, genre, or keyword.').send()
+# @celery.task()
+# def init_conversation(message):
+#     """Begin conversation."""
+#     SendToConversation(fill=message,
+#                        conversationId='jg3alifjua8sdljn9abiuao4ihbimroivb',
+#                        text='Hi! I\'m a chat bot designed to help you find movies. Feel free to search for movies by actor, title, genre, or keyword.').send()
 
 
+@celery.task()
 def handle_response(message):
     """Handle messages sent from the user."""
     if message["type"] == "message":
