@@ -21,7 +21,7 @@ def handle_response(message):
         sentiment = sentiment_analysis(message)
 
         print(sentiment)
-
+        print(response_text)
         ReplyToActivity(fill=message,
                         text=response_text).send()
 
