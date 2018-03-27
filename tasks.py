@@ -62,7 +62,7 @@ def generate_response(cognitive_response, message):
     """Generate the text response from the analysis from the language processing api."""
     # if no entity, default to title search
     if not cognitive_response['entities']:
-        return 'Searching for \'{}\' in movie titles.'.format(message['text'])
+        return 'Searching for {} in movie titles.'.format(message['text'])
 
     user_intent = cognitive_response['entities'][0]['type'].split('.')[1]
     entity = cognitive_response['entities'][0]['entity']
