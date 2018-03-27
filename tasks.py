@@ -5,18 +5,14 @@ import os
 movie_subsription_key = os.environ.get('MOVIE_KEY')
 
 
-def echo_response(message):
-    """Respond to message."""
+def handle_response(message):
+    """Handle messages sent from the user."""
     if message["type"] == "message":
         cognitive_response = sentament_analysis(message)
         # import pdb; pdb.set_trace()
         user_intent = cognitive_response['intents'][0]['intent'].split('.')[1]
         ReplyToActivity(fill=message,
                         text=user_intent).send()
-
-
-# def handle_response(message):
-    """Handle messages sent from the user."""
 
 
 def sentament_analysis(message):
