@@ -74,3 +74,5 @@ def generate_response(cognitive_response, message):
         return 'Searching for movies with keyword {}.'.format(entity)
     elif user_intent == 'Genre':
         return 'Searching for movies in the {} genre.'.format(entity)
+
+    return 'gotta return something...'
