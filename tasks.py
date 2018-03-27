@@ -57,7 +57,7 @@ def sentiment_analysis(message):
 
 def generate_response(cognitive_response, message):
     """Generate the text response from the analysis from the language processing api."""
-    # if no entity default to title search
+    # if no entity, default to title search
     if not cognitive_response['entities']:
         return 'Searching for \'{}\' in movie titles.'.format(message['text'])
 
