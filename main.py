@@ -1,4 +1,4 @@
-"""."""
+"""Bot flask app."""
 from microsoftbotframework import MsBot
 from tasks import handle_response
 
