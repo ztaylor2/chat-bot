@@ -21,3 +21,5 @@ Built on Flask with the Python package `microsoftbotframework 0.3.0`
     - `pip install -r requirements.txt`
 - run server 
     - `python main.py`
+- direct Bot Framework Emulator to:
+    - `http://localhost:5000/api/messages`
