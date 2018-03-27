@@ -1,5 +1,5 @@
 """Bot responses."""
-from microsoftbotframework import ReplyToActivity, SendToConversation
+from microsoftbotframework import ReplyToActivity, SendToConversation, CreateConversation
 import os
 import requests
 
@@ -10,6 +10,14 @@ import json
 
 luis_key = os.environ.get('LUIS_KEY')
 text_analytics_key = os.environ.get('TEXT_ANALYTICS_KEY')
+
+
+def create_conversation(message):
+    """."""
+    CreateConversation(fill=message,
+                       members=[{"id": "l0skjasdkfjkjlshdyvoiunbqiewur"}],
+                       topicName='Starting a conversation',
+                       text='Lets have a conversation').send()
 
 
 def init_conversation(message):
