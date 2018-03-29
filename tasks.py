@@ -9,6 +9,7 @@ import json
 
 luis_key = os.environ.get('LUIS_KEY')
 text_analytics_key = os.environ.get('TEXT_ANALYTICS_KEY')
+movie_api_key = os.environ.get('MOVIE_API_KEY')
 
 
 def start_conversation(message):
@@ -34,11 +35,8 @@ def handle_response(message):
 
 def intention_analysis(message):
     """Determine the intention of the user."""
-    print(luis_key)
     try:
         res = requests.get('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/c200592a-cb41-46de-8008-72f23c577591?subscription-key={}&q={}'.format(luis_key, message['text']))
-        print(res)
-        print(res.json())
         return res.json()
 
     except Exception as e:
@@ -76,17 +74,49 @@ def generate_response(cognitive_response, message):
     """Generate the text response from the analysis from the language processing api."""
     # if no entity, default to title search
     if not cognitive_response['entities']:
-        return 'Searching for {} in movie titles. '.format(message['text'])
+        res = requests.get('https://api.themoviedb.org/3/search/keyword?api_key={}&query={}&page=1'.format(movie_api_key, message['text']))
+        res_json = res.json()
+        if 'results' in res_json:
+            if res_json['results']:
+                movie = res_json['results'][0]['title']
+                return 'Searching for movies with the title of {}. The closest match is the movie {}.'.format(message['text'], movie)
+        return 'Sorry, we couldn\'t find that movie in the first page of results.'
 
     user_intent = cognitive_response['entities'][0]['type'].split('.')[1]
     entity = cognitive_response['entities'][0]['entity']
-    if user_intent == 'Title':
-        return 'Searching for movies with the title of {}. '.format(entity)
-    elif user_intent == 'Person':
-        return 'Searching for movies with {} as an actor. '.format(entity)
-    elif user_intent == 'Keyword':
-        return 'Searching for movies with keyword {}. '.format(entity)
-    elif user_intent == 'Genre':
-        return 'Searching for movies in the {} genre. '.format(entity)
 
-    return 'gotta return something... '
+    if user_intent == 'Title':
+        res = requests.get('https://api.themoviedb.org/3/search/keyword?api_key={}&query={}&page=1'.format(movie_api_key, entity))
+        res_json = res.json()
+        if 'results' in res_json:
+            if res_json['results']:
+                movie = res_json['results'][0]['title']
+                return 'Searching for movies with the title of {}. The closest match is the movie {}.'.format(entity, movie)
+        return 'Sorry, we couldn\'t find any results for that.'
+
+    elif user_intent == 'Person':
+        res = requests.get('https://api.themoviedb.org/3/search/movie?api_key={}&language=en-US&query={}&page=1&include_adult=false'.format(movie_api_key, entity))
+        res_json = res.json()
+        if 'results' in res_json:
+            if res_json['results']:
+                person = res_json['results'][0]['name']
+                return 'Searching for movies with {} as an actor. {} was the first result.'.format(entity, person)
+        return 'Sorry, we couldn\'t find any results for that.'
+
+    elif user_intent == 'Keyword' or user_intent == 'Genre':
+        res = requests.get('https://api.themoviedb.org/3/search/person?api_key={}&language=en-US&query={}&page=1'.format(movie_api_key, entity))
+        res_json = res.json()
+        if 'results' in res_json:
+            if res_json['results']:
+                movie = res_json['results'][0]['name']
+                return 'Searching for movies with keyword {}. The most relevent movie is {}.'.format(entity, movie)
+        return 'Sorry, we couldn\'t find any results for that.'
+
+    # elif user_intent == 'Genre':
+    #     res = requests.get('https://api.themoviedb.org/3/search/collection?api_key={}&language=en-US&query={}&page=1'.format(movie_api_key, entity))
+    #     res_json = res.json()
+    #     if 'results' in res_json:
+    #         movie = res_json['results'][0]['name']
+    #         return 'Searching for movies in the {} genre. The most relevent search result is {}.'.format(entity, movie)
+    #     else:
+    #         return 'Sorry, we couldn\'t find any results for that.'
