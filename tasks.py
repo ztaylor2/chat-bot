@@ -6,10 +6,19 @@ import urllib.parse
 import urllib.error
 import urllib.request
 import json
+import random
 
 luis_key = os.environ.get('LUIS_KEY')
 text_analytics_key = os.environ.get('TEXT_ANALYTICS_KEY')
 movie_api_key = os.environ.get('MOVIE_API_KEY')
+
+positive_responses = ['It sounds like you are having a swell day today!',
+                      'Glad you are having a good day.',
+                      'Hope your day continues to go well.']
+
+negative_responses = ['I hope your day improves.',
+                      'It sounds like your day isn\'t going so well, sorry to hear that.',
+                      'Sorry to hear that your day isn\'t going very well.']
 
 
 def start_conversation(message):
@@ -65,9 +74,9 @@ def sentiment_analysis(message):
 def generate_sentiment_conversation(sentiment):
     """Generate a sentence based off of the sentement of the user."""
     if sentiment >= .5:
-        return 'It sounds like you are having a swell day today!'
+        return random.choice(positive_responses)
     else:
-        return 'I hope your day improves.'
+        return random.choice(negative_responses)
 
 
 def generate_response(cognitive_response, message):
